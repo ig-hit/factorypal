@@ -15,15 +15,21 @@ USE_L10N = True
 USE_TZ = True
 
 INSTALLED_APPS = [
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'rest_framework',
     'drf_yasg',
+    'machine.apps.MachineConfig',
 ]
 
-INFLUXDB_HOST = os.environ['INFLUX_HOST']
-INFLUXDB_PORT = os.environ['INFLUX_PORT']
-INFLUXDB_USERNAME = os.environ['INFLUX_USERNAME']
-INFLUXDB_PASSWORD = os.environ['INFLUX_PASSWORD']
-INFLUXDB_DATABASE = os.environ['INFLUX_USERNAME']
-INFLUXDB_TIMEOUT = 10
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [],
+    'UNAUTHENTICATED_USER': None,
+}
+
+INFLUXDB_URL = os.environ['INFLUXDB_URL']
+INFLUXDB_TOKEN = os.environ['INFLUXDB_TOKEN']
 
 from drf_yasg import openapi
 SWAGGER_SETTINGS = {
