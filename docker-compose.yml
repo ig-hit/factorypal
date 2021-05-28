@@ -1,0 +1,26 @@
+version: '3'
+services:
+  influxdb:
+    image: quay.io/influxdb/influxdb:v2.0.3
+    container_name: factorypal-influxdb
+    volumes:
+      - factorypal-influxdbv2:/.influxdbv2
+    ports:
+      - "${INFLUXDB_PORT}:8086"
+    env_file:
+      - .env
+
+  influxdb_cli:
+    links:
+      - influxdb
+    image: quay.io/influxdb/influxdb:v2.0.3
+    container_name: factorypal-influxdb-cli
+    entrypoint: influx setup --bucket ${INFLUXDB_BUCKET} -t ${INFLUXDB_TOKEN} -o ${INFLUXDB_ORG} --username=${INFLUXDB_USER} --password=${INFLUXDB_PASSWORD} --host=${INFLUXDB_HOST} -f
+    restart: on-failure:10
+    depends_on:
+      - influxdb
+    env_file:
+      - .env
+
+volumes:
+  factorypal-influxdbv2:

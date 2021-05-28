@@ -14,7 +14,7 @@ if [ ! -f .env ]; then
 fi
 export $(grep -v '^#' .env | xargs -d '\n')
 
-# $dockerCompose up -d
+$dockerCompose up -d
 
 if [ ! -d "venv" ];then
   python -m venv venv
@@ -23,14 +23,10 @@ fi
 
 pip install -r requirements.txt
 
-# ./manage.py migrate
-
 # show result
 if [ $? -eq 0 ]; then
     echo ""
     echo "Successfully installed!"
-    echo "Please run ./manage.py createsuperuser"
-    echo "to install admin user if needed"
     echo ""
 else
     echo ""
