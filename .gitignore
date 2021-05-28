@@ -1,0 +1,12 @@
+.DS_Store
+.vscode
+.idea
+*.iml
+___.py
+venv
+__pycache__
+.venv
+media
+/.data/*
+/static/
+.env

@@ -1,0 +1,36 @@
+= image:images/factorypal.png[FactoryPal, 30] Code Challenge: Speed Metrics Service
+
+== Intro
+FactoryPal is receiving in realtime the running speed of production machineries. We would like
+to generate some useful metrics for our users and for this we want to build a metrics service.
+
+== The Challenge
+
+We would like to have a restful API to calculate machine data in real time. The service is with the following functionalities:
+
+- Load machine data from provided CSV file and store it into a datastore. The format of one machine data entry is as follows:
+
+Request body:
+[source, json]
+----
+{ "key": "embosser", "name": "Embosser" }
+----
+
+- Provide an endpoint that inserts machine parameters data into the datastore with the following format:
+
+Request body:
+[source, json]
+----
+{  "machineKey": "embosser", "parameters": {"core_diameter": 3, "speed": 20 }}
+----
+
+- Provide an endpoint that exposes the latest parameters for every machine.
+
+- Provide an endpoint that exposes the average, median, min and max of each parameters for the past N minutes for every machine.
+
+== Requirements
+
+* The API has to function properly.
+* The project should be buildable and runnable.
+* There should be unit tests and integration tests, which run successfully.
+* Since this service runs internally, security is not a concern.

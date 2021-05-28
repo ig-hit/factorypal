@@ -1,0 +1,10 @@
+[style]
+column_limit = 120
+dedent_closing_brackets = True
+spaces_before_comment = 2
+split_before_first_argument = True
+space_between_ending_comma_and_closing_bracket = False
+allow_split_before_dict_value = False
+
+[pytest]
+testpaths=tests
