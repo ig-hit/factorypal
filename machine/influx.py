@@ -44,7 +44,7 @@ class Parameters(client.Client):
     def latest(self, machine_key: str):
         ts = self.get_latest_timestamp(machine_key)
         if not ts:
-            return
+            return {}
 
         query = (
             f'from(bucket: "{settings.INFLUXDB_BUCKET}")'

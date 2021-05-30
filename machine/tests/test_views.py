@@ -45,6 +45,21 @@ class IndexViewTest(bootstrap.IntegrationTestCase):
             })
         self.assertEqual([data], machines)
 
+    def test_create_fails(self):
+        url = urls.reverse('machine-index-list')
+        data = {
+            'key': '',
+            'name': 'M-Name',
+        }
+
+        response = self.http_client.post(path=url, data=data, content_type='application/json')
+        res = response.json()
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            {'error': '{\'key\': [ErrorDetail(string=\'This field may not be blank.\', code=\'blank\')]}'}, res
+        )
+
 
 class ParametersViewTest(bootstrap.IntegrationTestCase):
     def test_create(self):
@@ -78,6 +93,22 @@ class ParametersViewTest(bootstrap.IntegrationTestCase):
             },
         })
 
+    def test_create_fails(self):
+        url = urls.reverse('machine-parameters-list', kwargs={'machine_pk': 'non-existing'})
+        data = {
+            'machineKey': 'non-existing',
+            'parameters': {
+                'param-1': 1,
+                'param-2': 2,
+            },
+        }
+
+        response = self.http_client.post(path=url, data=data, content_type='application/json')
+        res = response.json()
+        self.assertEqual(400, response.status_code)
+
+        self.assertEqual({'error': 'invalid machine key'}, res)
+
     def test_latest(self):
         # create machine
         machine_key = 'm-3'
@@ -94,6 +125,16 @@ class ParametersViewTest(bootstrap.IntegrationTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(res, {'p-3': 3, 'p-4': 4.4})
+
+    def test_latest_empty(self):
+        machine_key = 'm-3'
+
+        url = urls.reverse('machine-parameters-latest', kwargs={'machine_pk': machine_key})
+        response = self.http_client.get(path=url)
+        res = response.json()
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(res, {})
 
     def test_aggregates(self):
         # create machine
@@ -115,3 +156,11 @@ class ParametersViewTest(bootstrap.IntegrationTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(res, {'min': 1, 'max': 6, 'mean': 3.5, 'median': 3.5})
+
+    def test_aggregates_empty(self):
+        url = urls.reverse('machine-parameters-aggregates', kwargs={'machine_pk': 'non-existing', 'pk': 'x'})
+        response = self.http_client.get(path=url)
+        res = response.json()
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(res, {'min': None, 'max': None, 'mean': None, 'median': None})
