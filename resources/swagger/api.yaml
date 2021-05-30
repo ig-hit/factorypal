@@ -1,0 +1,165 @@
+swagger: '2.0'
+info:
+  title: FactoryPal API
+  description: description
+  termsOfService: https://www.google.com/policies/terms/
+  contact:
+    email: contact@snippets.local
+  license:
+    name: BSD License
+  version: v1
+basePath: /
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+paths:
+  /:
+    get:
+      operationId: _list
+      description: Health check
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ''
+    parameters: []
+  /machines/:
+    post:
+      operationId: machines_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Machine'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Machine'
+      tags:
+        - machines
+    parameters: []
+  /machines/{machine_pk}/parameters:
+    post:
+      operationId: machines_parameters_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Parameters'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Parameters'
+      tags:
+        - machines
+    parameters:
+      - name: machine_pk
+        in: path
+        required: true
+        type: string
+  /machines/{machine_pk}/parameters/latest:
+    get:
+      operationId: machines_parameters_latest
+      description: Returns the latest parameters for a machine
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+      tags:
+        - machines
+    parameters:
+      - name: machine_pk
+        in: path
+        required: true
+        type: string
+  /machines/{machine_pk}/parameters/{id}/aggregates:
+    get:
+      operationId: machines_parameters_aggregates
+      description: Returns aggregates parameters for a machine with a parameter
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - min
+              - max
+              - median
+              - mean
+            type: object
+            properties:
+              min:
+                type: number
+                format: float
+              max:
+                type: number
+                format: float
+              median:
+                type: number
+                format: float
+              mean:
+                type: number
+                format: float
+      tags:
+        - machines
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+      - name: machine_pk
+        in: path
+        required: true
+        type: string
+definitions:
+  Machine:
+    required:
+      - key
+      - name
+    type: object
+    properties:
+      key:
+        title: Key
+        description: Machine key
+        type: string
+        minLength: 1
+      name:
+        title: Name
+        description: Machine name
+        type: string
+        minLength: 1
+  Parameters:
+    required:
+      - machineKey
+      - parameters
+    type: object
+    properties:
+      machineKey:
+        title: Machinekey
+        description: Machine key
+        type: string
+        minLength: 1
+      parameters:
+        title: Parameters
+        description: Parameters
+        type: object
+        additionalProperties:
+          type: string
+          x-nullable: true

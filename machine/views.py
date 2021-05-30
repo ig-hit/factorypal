@@ -3,6 +3,7 @@ from django.utils import decorators
 from rest_framework import viewsets, decorators as drf_decorators, status
 
 from machine import serializers, influx
+from swagger import parameters as swagger_parameters
 import copy
 
 method_decorator = decorators.method_decorator
@@ -47,12 +48,14 @@ class ParametersView(viewsets.ViewSet, WithCreateMixin):
 
         return super().post(data)
 
+    @swagger_parameters.latest()
     @drf_decorators.action(methods=['GET'], detail=False, name='machine-parameters-latest')
     def latest(self, request, *args, **kwargs):
         machine_key = kwargs.get('machine_pk')
         res = influx.Parameters().latest(machine_key)
         return response.JsonResponse(res)
 
+    @swagger_parameters.aggregates()
     @drf_decorators.action(methods=['GET'], detail=True, name='machine-parameters-aggregates')
     def aggregates(self, request, pk, *args, **kwargs):
         machine_key = kwargs.get('machine_pk')
