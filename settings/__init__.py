@@ -27,10 +27,10 @@ REST_FRAMEWORK = {
     'UNAUTHENTICATED_USER': None,
 }
 
-INFLUXDB_ORG = os.environ['INFLUXDB_ORG']
-INFLUXDB_URL = os.environ['INFLUXDB_URL']
-INFLUXDB_TOKEN = os.environ['INFLUXDB_TOKEN']
-INFLUXDB_BUCKET = os.environ['INFLUXDB_BUCKET']
+INFLUXDB_ORG = os.environ.get('INFLUXDB_ORG')
+INFLUXDB_URL = os.environ.get('INFLUXDB_URL')
+INFLUXDB_TOKEN = os.environ.get('INFLUXDB_TOKEN')
+INFLUXDB_BUCKET = os.environ.get('INFLUXDB_BUCKET')
 
 from drf_yasg import openapi
 SWAGGER_SETTINGS = {
@@ -38,8 +38,8 @@ SWAGGER_SETTINGS = {
         title='FactoryPal API',
         default_version='v1',
         description='description',
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="BSD License"),
+        terms_of_service='https://www.google.com/policies/terms/',
+        contact=openapi.Contact(email='contact@snippets.local'),
+        license=openapi.License(name='BSD License'),
     ),
 }

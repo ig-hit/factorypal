@@ -3,6 +3,7 @@ from django.utils import decorators
 from rest_framework import viewsets, decorators as drf_decorators, status
 
 from machine import serializers, influx
+import copy
 
 method_decorator = decorators.method_decorator
 action = drf_decorators.action
@@ -13,7 +14,7 @@ def home(request):
     """
     Health check
     """
-    return response.JsonResponse(dict(success=True, message='Hallo, Motto!'))
+    return response.JsonResponse({'success': True})
 
 
 class WithCreateMixin(viewsets.GenericViewSet):
@@ -39,7 +40,7 @@ class ParametersView(viewsets.ViewSet, WithCreateMixin):
 
     def create(self, request, *args, **kwargs):
         machine_key = kwargs.get('machine_pk')
-        data = request.data
+        data = copy.deepcopy(request.data)
         # replace deprecated machineKey
         # it's passed in the url
         data['machineKey'] = machine_key

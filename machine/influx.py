@@ -1,3 +1,4 @@
+from concurrent import futures
 from typing import Dict
 
 import influxdb_client
@@ -11,7 +12,7 @@ class Machine(client.Client):
 
     def exists(self, key: str) -> bool:
         query = (
-            f'from(bucket: "{settings.INFLUXDB_BUCKET}") '
+            f'from(bucket: "{settings.INFLUXDB_BUCKET}")'
             f'|> range(start: 0, stop: now())'
             f'|> filter(fn: (r) => r._measurement == "{self.measurement}" and r.key == "{key}")'
             f'|> count()'
@@ -41,12 +42,12 @@ class Parameters(client.Client):
     measurement = 'params'
 
     def latest(self, machine_key: str):
-        ts = self.last_timestamp(machine_key)
+        ts = self.get_latest_timestamp(machine_key)
         if not ts:
             return
 
         query = (
-            f'from(bucket: "{settings.INFLUXDB_BUCKET}") '
+            f'from(bucket: "{settings.INFLUXDB_BUCKET}")'
             f'|> range(start: {ts.isoformat()}, stop: now())'
             f'|> filter(fn: (r) => r._measurement == "{self.measurement}" and r.machine_key == "{machine_key}")'
             f'|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'
@@ -61,7 +62,7 @@ class Parameters(client.Client):
 
         return {k: v for k, v in first.records[0].values.items() if k in cols}
 
-    def last_timestamp(self, machine_key: str):
+    def get_latest_timestamp(self, machine_key: str):
         query = (
             f'from(bucket: "{settings.INFLUXDB_BUCKET}")'
             f'|> range(start: 0, stop: now())'
@@ -79,22 +80,28 @@ class Parameters(client.Client):
         values = {}
         start_q = 0 if not last_minutes else f'-{last_minutes}m'
 
-        # todo(igor): collect async
+        queries = {}
         for fn in fns:
             values[fn] = None
             query = (
-                f'from(bucket: "{settings.INFLUXDB_BUCKET}") '
+                f'from(bucket: "{settings.INFLUXDB_BUCKET}")'
                 f'|> range(start: {start_q}, stop: now())'
                 f'|> filter(fn: (r) => r._measurement == "{self.measurement}" and r.machine_key == "{machine_key}")'
                 f'|> filter(fn: (r) => r._field == "{param_name}")'
                 f'|> {fn}()'
             )
+            queries[fn] = query
 
-            res = self.read(query)
-            if not res:
-                continue
+        with futures.ThreadPoolExecutor(max_workers=len(fns)) as executor:
+            futures_map = {executor.submit(self.read, q): f for f, q in queries.items()}
+            for future in futures.as_completed(futures_map):
+                fn = futures_map[future]
+                res = future.result()
 
-            values[fn] = res[0].records[0].get_value()
+                if not res:
+                    continue
+
+                values[fn] = res[0].records[0].get_value()
 
         return values
 
