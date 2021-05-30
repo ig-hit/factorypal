@@ -55,7 +55,7 @@ curl --location --request POST 'http://localhost:6600/machines/embosser/paramete
 curl --location --request GET 'http://localhost:6600/machines/embosser/parameters/latest'
 ```
 
-**Get Aggregated values for machine `emabosser` and parameter `x` for the last 10 minutes:**
+**Get Aggregated values for machine `embosser` and parameter `x` for the last 10 minutes:**
 ```bash
 curl --location --request GET 'http://localhost:6600/machines/embosser/parameters/x/aggregates?lastMinutes=10'
 ```
