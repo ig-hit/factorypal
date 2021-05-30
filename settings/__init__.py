@@ -1,6 +1,5 @@
-import pathlib
 import os
-
+import pathlib
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 SECRET_KEY = 'pae*=)f1$60gcj0_re-2u(tzqg4ni$sq2nvh1wgcx@hrh6_2+t'
@@ -28,8 +27,10 @@ REST_FRAMEWORK = {
     'UNAUTHENTICATED_USER': None,
 }
 
+INFLUXDB_ORG = os.environ['INFLUXDB_ORG']
 INFLUXDB_URL = os.environ['INFLUXDB_URL']
 INFLUXDB_TOKEN = os.environ['INFLUXDB_TOKEN']
+INFLUXDB_BUCKET = os.environ['INFLUXDB_BUCKET']
 
 from drf_yasg import openapi
 SWAGGER_SETTINGS = {

@@ -1,5 +1,10 @@
 .PHONY: install server swagger
 
+ifneq (,$(wildcard ./.env))
+  include .env
+  export
+endif
+
 install:
 	@./resources/install.sh
 
@@ -11,3 +16,9 @@ swagger:
 
 test:
 	./manage.py test -v=3
+
+populate-machines:
+	@./manage.py populate-machines
+
+populate-parameters:
+	@./manage.py populate-parameters

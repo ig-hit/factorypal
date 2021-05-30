@@ -23,6 +23,9 @@ fi
 
 pip install -r requirements.txt
 
+make populate-machines
+make populate-parameters
+
 # show result
 if [ $? -eq 0 ]; then
     echo ""

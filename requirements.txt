@@ -3,3 +3,5 @@ djangorestframework==3.12.4
 drf-nested-routers==0.93.3
 drf-yasg==1.20.0
 influxdb-client==1.17.0
+pandas==1.2.4
+schema==0.7.4
