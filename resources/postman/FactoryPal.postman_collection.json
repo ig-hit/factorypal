@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "49395a47-7035-48f8-9f64-074805ef213a",
+		"name": "FactoryPal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Machines",
+			"item": [
+				{
+					"name": "Parameters",
+					"item": [
+						{
+							"name": "Add Parameter",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"machineKey\": \"embosser\",\n    \"parameters\": {\n        \"x\": 1,\n        \"y\": 2,\n        \"z\": 3\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:6600/machines/{{machine-key}}/parameters",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "6600",
+									"path": [
+										"machines",
+										"{{machine-key}}",
+										"parameters"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Latest",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:6600/machines/{{machine-key}}/parameters/latest",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "6600",
+									"path": [
+										"machines",
+										"{{machine-key}}",
+										"parameters",
+										"latest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Aggregates",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:6600/machines/{{machine-key}}/parameters/x/aggregates?lastMinutes=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "6600",
+									"path": [
+										"machines",
+										"{{machine-key}}",
+										"parameters",
+										"x",
+										"aggregates"
+									],
+									"query": [
+										{
+											"key": "lastMinutes",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add Machine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"response code is 201\"] = responseCode.code === 201;",
+									"",
+									"try { ",
+									"    var json = JSON.parse(responseBody);",
+									"    tests['response is valid JSON'] = true;",
+									"    tests['key is present'] = _.has(json, 'key');",
+									"    tests['name is present'] = _.has(json, 'name');",
+									"    ",
+									"    postman.setEnvironmentVariable(\"machine-key\", json.key);",
+									"}",
+									"catch (e) { ",
+									"    tests['error: ' + e] = false;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"key\": \"embosser\", \n    \"name\": \"Embosser\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6600/machines/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "6600",
+							"path": [
+								"machines",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Healthcheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:6600",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6600"
+				}
+			},
+			"response": []
+		}
+	]
+}
